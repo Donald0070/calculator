@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<header>
+  <meta charset="UTF-8">
+  <title>بطاقات الأدوية</title>
+  <style>
+    body {
+    font-family: 'Segoe UI', sans-serif;
+    background-image: linear-gradient(#b2ed7dd1, #04fd00);
+    margin: 0;
+    padding: 20px;
+    direction: rtl
+    }
+
+    h1 {
+       border: #3498db solid 5px;
+      border-radius: 30px;
+       font-size: 50px;
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    #search {
+      display: block;
+      margin: 20px auto;
+      padding: 10px;
+      width: 80%;
+      max-width: 400px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .medicine-card {
+      background-color: #0bb14d;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 10px 2px 5px rgba(253, 1, 1, 0.5);
+      transition: transform 0.2s;
+    }
+
+    .medicine-card:hover {
+      transform: scale(1.02);
+  
+    }
+
+    .medicine-card h2 {
+      margin: 0 0 10px;
+      color: black;
+          cursor:pointer;
+    }
+
+    .medicine-card p {
+      margin: 5px 0;
+      color: #333;
+    }
+
+    .lang-toggle {
+      text-align: center;
+      margin-top: 10px;
+    }
+   
+
+    .lang-toggle button {
+      padding: 8px 16px;
+      margin: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background-color: #3498db;
+      color: white;
+    }
+
+    .lang-toggle button:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</header>
+<body>
+
+  <h1 style="font-family: 'Franklin Gothic Medium';">📋 موقع فارما الطبّي</h1>
+
+  <div class="lang-toggle">
+    <button onclick="setLanguage('ar')">العربية</button>
+    <button onclick="setLanguage('en')">English</button>
+  </div>
+<div><b style="font-size: x-large;color: red;">لطلب اي منتج عبر الموقع انقر  <a style="color: red;" href=""> هنا</a></b></div>
+  <input type="text" id="search" placeholder="🔍 ابحث عن اسم دواء..." oninput="filterCards()">
+
+  <div class="cards-container" id="cards"></div>
+
+  <script>
+    const medicines = [
+      {
+        name_ar: "باراسيتامول",
+        name_en: "Paracetamol",
+        use_ar: "مسكن وخافض للحرارة",
+        use_en: "Pain reliever and fever reducer",
+        dose: "500mg"
+      },
+      {
+        name_ar: "إيبوبروفين",
+        name_en: "Ibuprofen",
+        use_ar: "مضاد التهاب غير ستيرويدي",
+        use_en: "Non-steroidal anti-inflammatory",
+        dose: "400mg"
+      },
+      {
+        name_ar: "باراسين",
+        name_en: "paracine",
+        use_ar: "/ مضاد تشنج وخافض حرارة/ تحاميل",
+        use_en: "Broad-spectrum antibiotic",
+        dose: "500mg"
+      },
+      {
+
+    name_ar: "يونيڤينتال",
+        name_en: "UNIVENTAL",
+        use_ar: "بخّاخ فموي موسع قصبات",
+        use_en: "Oral bronchodilator spray",
+        dose: "---"
+    },
+      {
+
+    name_ar: "زولوسير",
+        name_en: "Zolosyr",
+        use_ar: "مضاد اكتئاب",
+        use_en: "Broad-spectrum antibiotic",
+        dose: "25mg , 50mg , 100mg"
+    },
+      {
+
+    name_ar: "أموكسيسيلين",
+        name_en: "Amoxicillin",
+        use_ar: "مضاد حيوي واسع الطيف",
+        use_en: "Antidepressant",
+        dose: "250mg"
+    },
+      {
+
+    name_ar: "سبيريتكس",
+        name_en: "spiritex",
+        use_ar: "علاج أعراض ثنائي القطب",
+        use_en: "Treatment of symptoms of rheumatoid arthritis",
+        dose: "2.5mg , 7.5mg , 10mg"
+    },
+      {
+
+    name_ar: "ميرتابين",
+        name_en: "mirtaPin",
+        use_ar: "مضاد اكتئاب ثلاثي الحلقة",
+        use_en: "Tricyclic depression",
+        dose: "15mg , 30mg"
+    },
+      {
+
+    name_ar: "ايمبرومود",
+        name_en: "impromood",
+        use_ar: "مضاد اكتئاب",
+        use_en: "Antidepressant",
+        dose: "---"
+    },
+      {
+
+    name_ar: "دي فوميت",
+        name_en: "De-Vomit",
+        use_ar: "مضاد اقياء",
+        use_en: "Antiemetic",
+        dose: "---"
+    },
+      {
+
+    name_ar: "دي هيستامين",
+        name_en: "DE-Histamin",
+        use_ar: "مضاد حساسيّة",
+        use_en: "Anti-allergy",
+        dose: "10mg"
+    },
+      {
+
+    name_ar: "ألتروكسين",
+        name_en: "Eltroxin",
+        use_ar: "قصور الغدة الدرقية",
+        use_en: "Hypothyroidism",
+        dose: "50mg , 100mg"
+    },
+      {
+
+    name_ar: "اورليستات",
+        name_en: "Orlistat",
+        use_ar: "منحف",
+        use_en: "",
+        dose: "120mg"
+    },
+      {
+
+    name_ar: "بريدنيزولون وريدي/فموي",
+        name_en: "Prednisolone",
+        use_ar: "علاج الربو و الحساسية",
+        use_en: "Asthma and allergy treatment",
+        dose: "200mg , 100mg"
+    },
+      {
+
+    name_ar: "اتروفينت",
+        name_en: "Atrovent",
+        use_ar: "بخاخ موسع قصبات",
+        use_en: "bronchodilator spray",
+        dose: "250mg , 500 mg"
+      },
+      {
+       name_ar: "ميديكس",
+        name_en: "Atrovent",
+        use_ar: "شراب فيتامينات للأطفال",
+        use_en: "Vitamin syrup for children",
+        dose: "---" 
+      }
+     
+    ];
+
+    let currentLang = 'ar';
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+      // if(lang==='ar'){
+      //    document.documentElement.dir ='rtl'
+      // }
+      // else {
+      //    document.documentElement.dir ='ltr'
+      // }
+      document.getElementById("search").placeholder = lang === 'ar' ? "🔍 ابحث عن اسم دواء..." : "🔍 Search for a medicine...";
+      renderCards();
+    }
+
+    function renderCards() {
+      const container = document.getElementById("cards");
+      container.innerHTML = "";
+      medicines.forEach(med => {
+        const card = document.createElement("div");
+        card.className = "medicine-card";
+        card.innerHTML = `
+          <h2>${currentLang === 'ar' ? med.name_ar : med.name_en}</h2>
+          <p>${currentLang === 'ar' ? med.use_ar : med.use_en}</p>
+          <p>💊 العيار concentration: ${med.dose}</p>
+          
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterCards() {
+      const query = document.getElementById("search").value.toLowerCase();
+      const container = document.getElementById("cards");
+      container.innerHTML = "";
+      medicines.forEach(med => {
+        const name = currentLang === 'ar' ? med.name_ar : med.name_en;
+        if (name.toLowerCase().includes(query)) {
+          const card = document.createElement("div");
+          card.className = "medicine-card";
+          card.innerHTML = `
+            <h2>${name}</h2>
+            <p>${currentLang === 'ar' ? med.use_ar : med.use_en}</p>
+            <p>💊 الجرعة: ${med.dose}</p>
+          `;
+          container.appendChild(card);
+        }
+      });
+    }
+
+    // Initial render
+    renderCards();
+  </script>
+
+</body>
+</html>
